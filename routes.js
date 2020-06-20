@@ -1,24 +1,29 @@
 const express = require('express')
 const Joi = require('@hapi/joi')
-const { insertItem, getItems, updateQuantity } = require('./db')
+const { insertGame, getGames, updateQuantity } = require('./db')
 
 const router = express.Router()
 
-const itemSchema = Joi.object().keys({
-  name: Joi.string(),
-  quantity: Joi.number().integer().min(0)
-})
+const gameSchema = Joi.object().keys({
+    userID: Joi.string(),
+    date: Joi.date(),
+    answers: Joi.array().items(Joi.object().keys({
+      word: Joi.string(),
+        answered: Joi.boolean()
+    })),
+    score: Joi.number().integer().min(0)
+});
 
-router.post('/item', (req, res) => {
-  const item = req.body
+router.post('/games/sprint/results', (req, res) => {
+  const game = req.body
   console.log(req.body)
-  const result = itemSchema.validate(item)
+  const result = gameSchema.validate(game)
   if (result.error) {
     console.log(result.error)
     res.status(400).end()
     return
   }
-  insertItem(item)
+  insertGame(game)
     .then(() => {
       res.status(200).end()
     })
@@ -28,15 +33,21 @@ router.post('/item', (req, res) => {
     })
 })
 
-router.get('/items', (req, res) => {
-  getItems()
-    .then((items) => {
-      items = items.map((item) => ({
-        id: item._id,
-        name: item.name,
-        quantity: item.quantity
+router.get('/games/sprint/results', (req, res) => {
+  getGames()
+    .then((games) => {
+      games = games.map((game) => ({
+        userID: game.userID,
+        date: game.date,
+        answers: [
+          {
+            word: game.answers[0].word,
+            answered: game.answers[0].answered
+          }
+        ],
+        score: game.score
       }))
-      res.json(items)
+      res.json(games)
     })
     .catch((err) => {
       console.log(err)
@@ -44,16 +55,16 @@ router.get('/items', (req, res) => {
     })
 })
 
-router.put('/item/:id/quantity/:quantity', (req, res) => {
-  const { id, quantity } = req.params
-  updateQuantity(id, parseInt(quantity))
-    .then(() => {
-      res.status(200).end()
-    })
-    .catch((err) => {
-      console.log(err)
-      res.status(500).end()
-    })
-})
+// router.put('/one/:name/sale/:sale', (req, res) => {
+//   const { name, sale } = req.params
+//   updateQuantity(name, parseInt(sale))
+//     .then(() => {
+//       res.status(200).end()
+//     })
+//     .catch((err) => {
+//       console.log(err)
+//       res.status(500).end()
+//     })
+// })
 
 module.exports = router

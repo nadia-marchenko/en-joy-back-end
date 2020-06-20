@@ -1,28 +1,28 @@
-const { MongoClient, ObjectId } = require('mongodb')
+const { MongoClient, ObjectId } = require('mongodb');
 
-const connectionUrl = 'mongodb://localhost:27017'
-const dbName = 'store'
+const connectionUrl = 'mongodb://localhost:27017';
+const dbName = 'en-joy';
 
-let db
+let db;
 
 const init = () =>
   MongoClient.connect(connectionUrl, { useNewUrlParser: true }).then((client) => {
     db = client.db(dbName)
-  })
+  });
 
-const insertItem = (item) => {
-  const collection = db.collection('items')
-  return collection.insertOne(item)
-}
+const insertGame = (game) => {
+  const collection = db.collection('games/sprint/results')
+  return collection.insertOne(game)
+};
 
-const getItems = () => {
-  const collection = db.collection('items')
+const getGames = () => {
+  const collection = db.collection('games/sprint/results')
   return collection.find({}).toArray()
-}
+};
 
-const updateQuantity = (id, quantity) => {
-  const collection = db.collection('items')
-  return collection.updateOne({ _id: ObjectId(id) }, { $inc: { quantity } })
-}
+// const updateQuantity = (name, sale) => {
+//   const collection = db.collection('games/sprint/results')
+//   return collection.updateOne({ name }, { $set: { sale } })
+// }
 
-module.exports = { init, insertItem, getItems, updateQuantity }
+module.exports = { init, insertGame, getGames } //updateQuantity }
