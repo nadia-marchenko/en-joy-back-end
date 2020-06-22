@@ -10,6 +10,6 @@ app.use(bodyParser.json())
 app.use(routes)
 
 init().then(() => {
-  console.log('starting server on port 3000')
-  app.listen(8000);
+  console.log('starting server on port 5000')
+  app.listen(5000);
 })
