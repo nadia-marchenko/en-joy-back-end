@@ -11,5 +11,5 @@ app.use(routes)
 
 init().then(() => {
   console.log('starting server on port 3000')
-  app.listen(3000)
+  app.listen(8000);
 })
