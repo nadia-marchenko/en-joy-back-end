@@ -1,6 +1,6 @@
 const { MongoClient, ObjectId } = require('mongodb');
 
-const connectionUrl = 'mongodb://localhost:27017';
+const connectionUrl = 'mongodb+srv://vgorillovitch:Vlj3U9rKySfXKlol@cluster0-qedge.mongodb.net/en-joy?retryWrites=true&w=majority';
 const dbName = 'en-joy';
 
 let db;
@@ -12,7 +12,12 @@ const init = () =>
 
 const insertGame = (game) => {
   const collection = db.collection('games/sprint/results')
-  return collection.insertOne(game)
+  const res = collection.insertOne(game)
+  res.then(
+    result => console.log(result), // выведет "done!" через одну секунду
+    error => console.log(error) // не будет запущена
+  );
+  return res
 };
 
 const getGames = () => {
