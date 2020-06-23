@@ -1,18 +1,8 @@
 const express = require('express');
-const Joi = require('@hapi/joi');
 const { insertSprintGame, getSprintGames } = require('./db');
+const { gameSprintSchema } = require('./validation');
 
 const router = express.Router();
-
-const gameSprintSchema = Joi.object().keys({
-    userID: Joi.string(),
-    date: Joi.date(),
-    answers: Joi.array().items(Joi.object().keys({
-      word: Joi.string(),
-        answered: Joi.boolean()
-    })),
-    score: Joi.number().integer().min(0)
-});
 
 router.post('/games/sprint/results', (req, res) => {
   const game = req.body;
