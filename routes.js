@@ -1,10 +1,10 @@
-const express = require('express')
-const Joi = require('@hapi/joi')
-const { insertGame, getGames, updateQuantity } = require('./db')
+const express = require('express');
+const Joi = require('@hapi/joi');
+const { insertSprintGame, getSprintGames } = require('./db');
 
-const router = express.Router()
+const router = express.Router();
 
-const gameSchema = Joi.object().keys({
+const gameSprintSchema = Joi.object().keys({
     userID: Joi.string(),
     date: Joi.date(),
     answers: Joi.array().items(Joi.object().keys({
@@ -15,26 +15,26 @@ const gameSchema = Joi.object().keys({
 });
 
 router.post('/games/sprint/results', (req, res) => {
-  const game = req.body
-  console.log(req.body)
-  const result = gameSchema.validate(game)
+  const game = req.body;
+  console.log(req.body);
+  const result = gameSprintSchema.validate(game);
   if (result.error) {
-    console.log(result.error)
-    res.status(400).end()
-    return
+    console.log(result.error);
+    res.status(400).end();
+    return;
   }
-  insertGame(game)
+  insertSprintGame(game)
     .then(() => {
-      res.status(200).end()
+      res.status(200).end();
     })
     .catch((err) => {
-      console.log(err)
-      res.status(500).end()
+      console.log(err);
+      res.status(500).end();
     })
 })
 
 router.get('/games/sprint/results', (req, res) => {
-  getGames()
+  getSprintGames()
     .then((games) => {
       games = games.map((game) => ({
         userID: game.userID,
@@ -47,24 +47,12 @@ router.get('/games/sprint/results', (req, res) => {
         ],
         score: game.score
       }))
-      res.json(games)
+      res.json(games);
     })
     .catch((err) => {
-      console.log(err)
-      res.status(500).end()
+      console.log(err);
+      res.status(500).end();
     })
 })
 
-// router.put('/one/:name/sale/:sale', (req, res) => {
-//   const { name, sale } = req.params
-//   updateQuantity(name, parseInt(sale))
-//     .then(() => {
-//       res.status(200).end()
-//     })
-//     .catch((err) => {
-//       console.log(err)
-//       res.status(500).end()
-//     })
-// })
-
-module.exports = router
+module.exports = router;
